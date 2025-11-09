@@ -1,0 +1,67 @@
+FIREBASE SETUP INSTRUCTIONS
+===========================
+
+To fix the "Registration Failed" error, you need to set up a real Firebase project:
+
+STEP 1: Create Firebase Project
+1. Go to https://console.firebase.google.com/
+2. Click "Create a project"
+3. Project name: "house-price-view"
+4. Click "Continue"
+5. Disable Google Analytics and click "Create project"
+6. Wait for project creation to complete
+
+STEP 2: Enable Authentication
+1. In Firebase Console, go to "Build" > "Authentication"
+2. Click "Get Started"
+3. Click on "Email/Password"
+4. Enable "Email/Password" and click "Save"
+
+STEP 3: Create Firestore Database
+1. In Firebase Console, go to "Build" > "Firestore Database"
+2. Click "Create database"
+3. Choose "Start in production mode"
+4. Select region (e.g., "us-central1")
+5. Click "Enable"
+
+STEP 4: Get Web Configuration
+1. In Firebase Console, click the gear icon (Settings) > "Project settings"
+2. Scroll down to "Your apps" section
+3. Click on the web app icon (</>)
+4. If no web app exists, click "Add app" and select "Web"
+5. Copy the Firebase configuration object
+
+STEP 5: Update firebase_options.dart
+Replace the web configuration in lib/firebase_options.dart with your actual credentials:
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'YOUR_API_KEY_HERE',
+    appId: '1:YOUR_PROJECT_NUMBER:web:YOUR_APP_ID',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    projectId: 'house-price-view',
+    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+    databaseURL: 'https://YOUR_PROJECT_ID.firebaseio.com',
+    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+  );
+
+STEP 6: Set Firestore Security Rules (for testing only)
+1. Go to "Firestore Database" > "Rules"
+2. Replace with:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+
+3. Click "Publish"
+
+STEP 7: Run the app
+flutter clean
+flutter pub get
+flutter run -d chrome
+
+Now registration and login should work!
